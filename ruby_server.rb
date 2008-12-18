@@ -4,12 +4,15 @@ require 'main'
 require 'socket'
 require 'gserver'
 
+$stdout.sync = true
+
 class AdventureServer < GServer
   def initialize(port, *args)
     super(port, *args)
   end
   def serve(io)
-    io.puts("ready")
+    io.sync = true
+    io.puts("Hello!")
     io.gets
   end
 end
@@ -18,7 +21,7 @@ Main do
   argument 'file' do
     required
   end
-  option('port', 'p') do
+  option('port=port', 'p') do
     cast    :int
     default 4321
   end
@@ -38,6 +41,7 @@ Main do
       puts "Finished."
     end
     server.start
+    puts "ready"
     server.join
   end
 end
