@@ -1,0 +1,18 @@
+intro Welcome to the Mazes of Mayhem
+room stone_chamber {
+  name Stone Chamber
+  desc A chamber of stone, cold and dank
+  exit north catacomb
+  exit west  cellar
+  exit south sewer
+}
+room cellar {
+  name Cellar
+  desc This room appears to be a root cellar
+  exit east stone_chamber
+}
+room catacomb {}
+room sewer    {}
+start stone_chamber
+
+

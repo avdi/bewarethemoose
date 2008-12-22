@@ -1,0 +1,18 @@
+#!/usr/bin/expect -f
+
+spawn [lindex $argv 0] mazesofmayhem.dat
+
+expect "Welcome to the Mazes of Mayhem"
+expect "Stone Chamber"
+expect ">"
+send "look\r"
+expect "A chamber of stone, cold and dank"
+expect "Exits are to the north, west and south"
+expect ">"
+send "west\r"
+expect "Cellar"
+expect ">"
+send "look\r"
+expect "This room appears to be root cellar"
+expect "Exit to the east"
+expect ">"
