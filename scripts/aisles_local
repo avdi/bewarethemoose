@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+
+spawn [lindex $argv 0] aislesofennui.dat
+
+expect "Welcome to the Aisles of Ennui"
+expect "Coffee Shop"
+expect ">"
+send "look\r"
+expect "A trendy coffee shop.  A shaggy-haired hipster strums dejectedly on a tiny stage."
+expect "Exit to the north"
+expect ">"
+send "west\r"
+expect "You can't go that way"
+expect ">"
+send "north\r"
+expect "Bohemian District"
+expect ">"
+send "look\r"
+expect "A cobbled street lined with bars and quirky boutiques."
+expect "Exit to the south"
+expect ">"

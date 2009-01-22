@@ -1,0 +1,31 @@
+#!/usr/bin/expect -f
+
+proc fail {why} {
+    puts "[info script]:Script failed: $why"
+    exit -1
+}
+
+set timeout 3
+
+spawn [lindex $argv 0] mazesofmayhem.dat
+expect_after {
+    eof                 {fail "Unexpected EOF"}
+    timeout             {fail "Timed out"}
+    "> "                {fail "Expected output not found"}
+}
+
+expect "Welcome to the Mazes of Mayhem"
+expect "Stone Chamber"
+expect "> "
+send "look\r"
+expect "A chamber of stone, cold and dank"
+expect "Exits to the north, south and west"
+expect "> "
+send "west\r"
+expect "Cellar"
+expect "> "
+send "look\r"
+expect "This room appears to be a root cellar"
+expect "Exit to the east"
+send "exit"
+exit
