@@ -5,12 +5,15 @@ SCRIPT_NAMES = $(notdir $(SCRIPTS))
 LOGS         = $(foreach impl,$(IMPL_NAMES),$(foreach script,$(SCRIPT_NAMES),log/$(impl)-$(script).log))
 EXPECT       = expect
 EXPECTFLAGS  =
-export IMPL  ?= ruby
+export IMPL  ?= btm_ruby.rb
 
 all:
-	$(MAKE) log/hello-$(IMPL).log
-	$(MAKE) log/mazes_local-$(IMPL).log
-	$(MAKE) log/aisles_local-$(IMPL).log
+	@for log in $(LOGS); do \
+		$(MAKE) $$log; \
+	done
 
-log/%-$(IMPL).log : scripts/% implementations/$(IMPL)
-	$(EXPECT) $(EXPECTFLAGS) implementations/$(IMPL) $< $@
+log/$(IMPL)-%.log : scripts/% implementations/$(IMPL)
+	@echo ===================================================================
+	@echo "Script: $<; Implementation: $(IMPL)"
+	@echo ===================================================================
+	$(EXPECT) $(EXPECTFLAGS) $< implementations/$(IMPL) $@

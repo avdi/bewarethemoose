@@ -1,6 +1,8 @@
 #!/usr/bin/expect -f
 
-spawn [lindex $argv 0] aislesofennui.dat
+source lib/common_init.tcl
+
+spawn [lindex $argv 0] data/aislesofennui.dat
 
 expect "Welcome to the Aisles of Ennui"
 expect "Coffee Shop"
@@ -10,7 +12,7 @@ expect "A trendy coffee shop.  A shaggy-haired hipster strums dejectedly on a ti
 expect "Exit to the north"
 expect ">"
 send "west\r"
-expect "You can't go that way"
+expect "There is no exit to the west"
 expect ">"
 send "north\r"
 expect "Bohemian District"

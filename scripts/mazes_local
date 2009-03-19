@@ -1,18 +1,8 @@
-#!/usr/bin/expect -f
+#!/usr/bin/env expect -f
 
-proc fail {why} {
-    puts "[info script]:Script failed: $why"
-    exit -1
-}
+source lib/common_init.tcl
 
-set timeout 3
-
-spawn [lindex $argv 0] mazesofmayhem.dat
-expect_after {
-    eof                 {fail "Unexpected EOF"}
-    timeout             {fail "Timed out"}
-    "> "                {fail "Expected output not found"}
-}
+spawn [lindex $argv 0] data/mazesofmayhem.dat
 
 expect "Welcome to the Mazes of Mayhem"
 expect "Stone Chamber"
