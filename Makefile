@@ -1,19 +1,38 @@
+SHELL        = bash --rcfile functions.sh
 IMPLS        = $(wildcard implementations/*)
 SCRIPTS      = $(wildcard scripts/*)
 IMPL_NAMES   = $(notdir $(IMPLS))
 SCRIPT_NAMES = $(notdir $(SCRIPTS))
-LOGS         = $(foreach impl,$(IMPL_NAMES),$(foreach script,$(SCRIPT_NAMES),log/$(impl)-$(script).log))
+EXECUTABLES  = $(addsuffix /btm, $(IMPLS))
 EXPECT       = expect
 EXPECTFLAGS  =
-export IMPL  ?= btm_ruby.rb
 
-all:
-	@for log in $(LOGS); do \
-		$(MAKE) $$log; \
-	done
 
-log/$(IMPL)-%.log : scripts/% implementations/$(IMPL)
-	@echo ===================================================================
-	@echo "Script: $<; Implementation: $(IMPL)"
-	@echo ===================================================================
-	$(EXPECT) $(EXPECTFLAGS) $< implementations/$(IMPL) $@
+all: $(EXECUTABLES)
+	@. functions.sh;													\
+	for impl in $(dir $?); do $(MAKE) `impl_logs $$impl`; done
+
+log/%.log: log
+	@. functions.sh;													\
+	run_script `log_impl $@` `log_script $@` $@
+
+log:
+	mkdir $@
+
+shell:
+	exec $(SHELL) -i
+
+list_implementations:
+	@for impl in $(IMPL_NAMES); do echo $$impl; done
+
+list_scripts:
+	@for script in $(SCRIPT_NAMES); do echo $$script; done
+ 
+$(EXECUTABLES):
+	@impl_dir=$(dir $@);										\
+	if [ -e $$impl_dir/Makefile ]; then							\
+		$(MAKE) -C $$impl_dir;									\
+	else														\
+		echo "No Makefile for $$impl_dir; skipping.";			\
+	fi															\
+
