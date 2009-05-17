@@ -1,0 +1,7 @@
+#!/usr/bin/expect -f
+
+source lib/common_init.tcl
+
+spawn [lindex $argv 0] data/mazesofmayhem.dat
+
+expect "Beware of the Moose"

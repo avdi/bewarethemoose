@@ -128,6 +128,7 @@ class Game
     self.player!
     player.tell(intro)
     player.tell_location
+    player.tell("Beware of the Moose")
     until(exit_requested?) do
       begin
         command = player.prompt

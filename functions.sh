@@ -23,20 +23,37 @@ function log_impl() {
     echo `basename $log .log` | cut -d - -f 1
 }
 
+function log_exec() {
+    echo implementations/`log_impl $1`/btm
+}
+
 function run_script() {
     impl=${1:?}
     script=${2:?}
     log=${3:?}
     logdir=`dirname $log`
     logbase=`basename $log .log`
+    header="$impl / $script"
+    
+    echo
+    echo "============================================================"
+    echo "Running $header"
+    echo "------------------------------------------------------------"
 
     ./scripts/$script ./implementations/$impl/btm | tee $log
 
     if [ $? == 0 ]; then
-        ln -s $logbase.log $logdir/$logbase.SUCCESS.log
+        result=SUCCESS
     else
-        ln -s $logbase.log $logdir/$logbase.FAIL.log
+        result=FAILURE
     fi
+    ln -s $logbase.log $logdir/$logbase.$result.log
+
+    echo
+    echo "------------------------------------------------------------"
+    echo "$result running $header"
+    echo "============================================================"
+
 }
 
 

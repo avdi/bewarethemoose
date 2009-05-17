@@ -7,9 +7,15 @@ SCRIPT_NAMES = $(notdir $(SCRIPTS))
 EXECUTABLES  = $(addsuffix /btm, $(IMPLS))
 EXPECT       = expect
 EXPECTFLAGS  =
-export VERBOSE=""
 
-all: $(EXECUTABLES)
+################################################################################
+# FUNCTIONS
+################################################################################
+
+################################################################################
+# RULES
+################################################################################
+all:
 	@. functions.sh;													\
 	for impl in $(dir $?); do $(MAKE) `impl_logs $$impl`; done
 
@@ -18,6 +24,7 @@ clean:
 
 log/%.log: log
 	@. functions.sh;													\
+	$(MAKE) -C implementations/`log_impl $@` btm;						\
 	run_script `log_impl $@` `log_script $@` $@
 
 log:
