@@ -15,20 +15,28 @@ function script_names() {
 
 function log_script() {
     log=${1:?}
-    echo `basename $log .log` | cut -d _ -f 2
+    echo `basename $log .log` | cut -d - -f 2
 }
 
 function log_impl() {
     log=${1:?}
-    echo `basename $log .log` | cut -d _ -f 1
+    echo `basename $log .log` | cut -d - -f 1
 }
 
 function run_script() {
     impl=${1:?}
     script=${2:?}
     log=${3:?}
+    logdir=`dirname $log`
+    logbase=`basename $log .log`
 
-    scripts/$script implementations/$impl | tee > $log
+    ./scripts/$script ./implementations/$impl/btm | tee $log
+
+    if [ $? == 0 ]; then
+        ln -s $logbase.log $logdir/$logbase.SUCCESS.log
+    else
+        ln -s $logbase.log $logdir/$logbase.FAIL.log
+    fi
 }
 
 

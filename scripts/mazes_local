@@ -1,4 +1,4 @@
-#!/usr/bin/env expect -f
+#!/usr/bin/expect -f
 
 source lib/common_init.tcl
 
