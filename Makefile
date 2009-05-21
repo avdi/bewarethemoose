@@ -11,21 +11,47 @@ EXPECTFLAGS  =
 ################################################################################
 # FUNCTIONS
 ################################################################################
+impl_name		= $(notdir $(1))
+script_name		= $(notdir $(1))
+impl_logs		= $(foreach script,										\
+							$(SCRIPT_NAMES),							\
+							log/$(call impl_name,$(1))-$(script).log)	
+log_script		= $(shell basename $(1) .log | cut -d - -f 2)
+log_impl		= $(shell basename $(1) .log | cut -d - -f 1)
+log_exec		= implementations/$(call log_impl, $(1))/btm
+log_result      = $(wildcard $(basename $(1))-*.log)
+
 
 ################################################################################
 # RULES
 ################################################################################
-all:
-	@. functions.sh;													\
-	for impl in $(dir $?); do $(MAKE) `impl_logs $$impl`; done
+all: $(foreach impl, $(IMPL_NAMES), $(call impl_logs,$(impl)))
 
 clean:
 	-rm -r ./log
 
-log/%.log: log
-	@. functions.sh;													\
-	$(MAKE) -C implementations/`log_impl $@` btm;						\
-	run_script `log_impl $@` `log_script $@` $@
+log/%.log: 
+	$(MAKE) run_script LOG=$@
+
+run_script: IMPL   = $(call log_impl, $(LOG))
+run_script: SCRIPT = $(call log_script, $(LOG))
+run_script: HEADER = $(IMPL) / $(SCRIPT)
+run_script: $(IMPL) $(SCRIPT) log
+	@echo
+	@echo "============================================================"
+	@echo "Running $(HEADER)"
+	@echo "------------------------------------------------------------"
+
+	@if scripts/$(SCRIPT) implementations/$(IMPL)/btm; then \
+      ln -s `basename $(LOG)` log/`basename $(LOG) .log`-PASS.log; \
+    else \
+      ln -s `basename $(LOG)` log/`basename $(LOG) .log`-FAIL.log; \
+    fi | tee $(LOG)
+
+	@echo
+	@echo "------------------------------------------------------------"
+	@ls log/`basename $(LOG) .log`-*.log
+	@echo "============================================================"
 
 log:
 	mkdir $@
